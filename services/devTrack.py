@@ -66,12 +66,14 @@ class DevTrack:
         description = input("Description: ")
         technology = input("Technology used: ")
         status = input("Status: ")
+        priority = input("Priority (Low/Medium/High): ")
 
         project = Project(
             name,
             description,
             technology,
-            status
+            status,
+            priority
         )
 
         self.projects.append(project)

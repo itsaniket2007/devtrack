@@ -31,12 +31,7 @@ class DevTrack:
 
         difficulty = input("Difficulty (Easy/Medium/Hard): ")
 
-        learning = LearningEntry(
-            topic,
-            description,
-            hours,
-            difficulty
-        )
+        learning = LearningEntry(topic, description, hours, difficulty)
 
         self.learning_entries.append(learning)
 
@@ -68,13 +63,7 @@ class DevTrack:
         status = input("Status: ")
         priority = input("Priority (Low/Medium/High): ")
 
-        project = Project(
-            name,
-            description,
-            technology,
-            status,
-            priority
-        )
+        project = Project(name, description, technology, status, priority)
 
         self.projects.append(project)
 
@@ -91,6 +80,22 @@ class DevTrack:
         for index, project in enumerate(self.projects, start=1):
             print(f"\n[{index}]")
             project.display()
+
+    def filter_projects(self):
+        print("\n===== FILTER PROJECTS =====")
+
+    status = input("Enter status (Planning/Working/Completed): ").lower()
+
+    found = False
+
+    for project in self.projects:
+
+        if project.status.lower() == status:
+            project.display()
+            found = True
+
+    if not found:
+        print("\nNo projects found with this status.")
 
     # ==========================================
     # TASKS
@@ -232,12 +237,13 @@ class DevTrack:
             print("2. View Learning")
             print("3. Add Project")
             print("4. View Projects")
-            print("5. Add Task")
-            print("6. View Tasks")
-            print("7. Complete Task")
-            print("8. Search")
-            print("9. Validate Email")
-            print("10. Statistics")
+            print("5. Filter Projects")
+            print("6. Add Task")
+            print("7. View Tasks")
+            print("8. Complete Task")
+            print("9. Search")
+            print("10. Validate Email")
+            print("11. Statistics")
             print("0. Exit")
 
             print("===================================")
@@ -255,23 +261,26 @@ class DevTrack:
 
             elif choice == "4":
                 self.view_projects()
-
+                
             elif choice == "5":
-                self.add_task()
+                self.filter_projects()
 
             elif choice == "6":
-                self.view_tasks()
+                self.add_task()
 
             elif choice == "7":
-                self.complete_task()
+                self.view_tasks()
 
             elif choice == "8":
-                self.search()
+                self.complete_task()
 
             elif choice == "9":
-                self.check_email()
+                self.search()
 
             elif choice == "10":
+                self.check_email()
+
+            elif choice == "11":
                 self.statistics()
 
             elif choice == "0":

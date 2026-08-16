@@ -1,3 +1,4 @@
+from datetime import datetime
 from models.learning import LearningEntry
 from models.project import Project
 from models.task import Task
@@ -81,21 +82,34 @@ class DevTrack:
             print(f"\n[{index}]")
             project.display()
 
+
     def filter_projects(self):
+
         print("\n===== FILTER PROJECTS =====")
 
-    status = input("Enter status (Planning/Working/Completed): ").lower()
+        status = input(
+            "Enter status (Planning/Working/Completed): "
+        ).lower()
 
-    found = False
+        found = False
 
-    for project in self.projects:
+        for project in self.projects:
 
-        if project.status.lower() == status:
-            project.display()
-            found = True
+            if project.status.lower() == status:
+                project.display()
+                found = True
 
-    if not found:
-        print("\nNo projects found with this status.")
+        if not found:
+            print("\nNo projects found with this status.")
+
+        for project in self.projects:
+
+            if project.status.lower() == status:
+                project.display()
+                found = True
+
+        if not found:
+            print("\nNo projects found with this status.")
 
     # ==========================================
     # TASKS
@@ -107,13 +121,26 @@ class DevTrack:
 
         title = input("Task: ")
         priority = input("Priority (Low/Medium/High): ")
+        due_date = input("Due date (DD-MM-YYYY): ")
 
-        task = Task(title, priority)
+        try:
+            datetime.strptime(due_date, "%d-%m-%Y")
+
+        except ValueError:
+            print("\nInvalid date format.")
+            print("Please use DD-MM-YYYY.")
+            return
+
+        task = Task(
+            title,
+            priority,
+            due_date
+         )
 
         self.tasks.append(task)
 
         print("\nTask added successfully!")
-
+    
     def view_tasks(self):
 
         print("\n===== YOUR TASKS =====")

@@ -3,6 +3,7 @@ from models.learning import LearningEntry
 from models.project import Project
 from models.task import Task
 from utils.valiadators import validate_email
+from utils.status import ProjectStatus
 
 
 class DevTrack:
@@ -87,24 +88,30 @@ class DevTrack:
 
         print("\n===== FILTER PROJECTS =====")
 
-        status = input(
-            "Enter status (Planning/Working/Completed): "
-        ).lower()
+        print("1. Planning")
+        print("2. Working")
+        print("3. Completed")
+
+        choice = input("Choose status: ")
+
+        if choice == "1":
+            status = ProjectStatus.PLANNING
+
+        elif choice == "2":
+            status = ProjectStatus.WORKING
+
+        elif choice == "3":
+            status = ProjectStatus.COMPLETED
+
+        else:
+            print("\nInvalid choice.")
+            return
 
         found = False
 
         for project in self.projects:
 
-            if project.status.lower() == status:
-                project.display()
-                found = True
-
-        if not found:
-            print("\nNo projects found with this status.")
-
-        for project in self.projects:
-
-            if project.status.lower() == status:
+            if project.status == status:
                 project.display()
                 found = True
 

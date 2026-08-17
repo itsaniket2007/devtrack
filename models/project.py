@@ -1,3 +1,6 @@
+from utils.status import ProjectStatus
+
+
 class Project:
 
     def __init__(self, name, description, technology, status, priority):
@@ -12,6 +15,6 @@ class Project:
         print(f"Project     : {self.name}")
         print(f"Description : {self.description}")
         print(f"Technology  : {self.technology}")
-        print(f"Status      : {self.status}")
+        print(f"Status      : {self.status.value}")
         print(f"Priority    : {self.priority}")
         print("-----------------------------")

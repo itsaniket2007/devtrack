@@ -4,14 +4,16 @@ from models.project import Project
 from models.task import Task
 from utils.valiadators import validate_email
 from utils.status import ProjectStatus
+from repositories.project_repository import ProjectRepository
+from repositories.task_repository import TaskRepository
 
 
 class DevTrack:
 
     def __init__(self):
         self.learning_entries = []
-        self.projects = []
-        self.tasks = []
+        self.project_repository = ProjectRepository()
+        self.task_repository = TaskRepository()
 
     # ==========================================
     # LEARNING
@@ -67,7 +69,7 @@ class DevTrack:
 
         project = Project(name, description, technology, status, priority)
 
-        self.projects.append(project)
+        self.project_repository.add(project)
 
         print("\nProject added successfully!")
 
@@ -75,11 +77,14 @@ class DevTrack:
 
         print("\n===== YOUR PROJECTS =====")
 
-        if not self.projects:
+        projects = self.project_repository.get_all()
+
+        if not projects:
             print("No projects found.")
             return
 
-        for index, project in enumerate(self.projects, start=1):
+        for index, project in enumerate(projects, start=1):
+
             print(f"\n[{index}]")
             project.display()
 
@@ -107,16 +112,14 @@ class DevTrack:
             print("\nInvalid choice.")
             return
 
-        found = False
+        projects = self.project_repository.find_by_status(status)
 
-        for project in self.projects:
-
-            if project.status == status:
-                project.display()
-                found = True
-
-        if not found:
+        if not projects:
             print("\nNo projects found with this status.")
+            return
+
+        for project in projects:
+            project.display()
 
     # ==========================================
     # TASKS
@@ -144,7 +147,7 @@ class DevTrack:
             due_date
          )
 
-        self.tasks.append(task)
+        self.task_repository.add(task)
 
         print("\nTask added successfully!")
     
@@ -152,17 +155,22 @@ class DevTrack:
 
         print("\n===== YOUR TASKS =====")
 
-        if not self.tasks:
+        tasks = self.task_repository.get_all()
+
+        if not tasks:
             print("No tasks found.")
             return
 
-        for index, task in enumerate(self.tasks, start=1):
+        for index, task in enumerate(tasks, start=1):
+
             print(f"\n[{index}]")
             task.display()
 
     def complete_task(self):
 
-        if not self.tasks:
+        tasks = self.task_repository.get_all()
+
+        if not tasks:
             print("\nNo tasks available.")
             return
 
@@ -171,12 +179,15 @@ class DevTrack:
         try:
             choice = int(input("\nEnter task number: "))
 
-            if 1 <= choice <= len(self.tasks):
-                self.tasks[choice - 1].mark_completed()
-                print("\nTask marked as completed!")
+            task = self.task_repository.get_by_index(choice - 1)
 
-            else:
+            if task is None:
                 print("\nInvalid task number.")
+                return
+
+            task.mark_completed()
+
+            print("\nTask marked as completed!")
 
         except ValueError:
             print("\nPlease enter a number.")

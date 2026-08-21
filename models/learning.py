@@ -1,9 +1,10 @@
+from dataclasses import dataclass
+@dataclass
 class LearningEntry:
-    def __init__(self, topic, description, hours, difficulty):
-        self.topic = topic
-        self.description = description
-        self.hours = hours
-        self.difficulty = difficulty
+    topic: str
+    description: str
+    hours: float
+    difficulty: str
 
     def display(self):
         print("\n-----------------------------")

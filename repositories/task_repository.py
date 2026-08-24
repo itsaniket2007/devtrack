@@ -1,4 +1,7 @@
-class TaskRepository:
+from repositories.base_repository import BaseRepository
+
+
+class TaskRepository(BaseRepository):
 
     def __init__(self):
         self.tasks = []

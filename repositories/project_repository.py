@@ -1,4 +1,7 @@
-class ProjectRepository:
+from repositories.base_repository import BaseRepository
+
+
+class ProjectRepository(BaseRepository):
 
     def __init__(self):
         self.projects = []

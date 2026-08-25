@@ -6,6 +6,7 @@ from utils.valiadators import validate_email
 from utils.status import ProjectStatus
 from repositories.project_repository import ProjectRepository
 from repositories.task_repository import TaskRepository
+from utils.logger import logger
 
 
 class DevTrack:
@@ -70,6 +71,7 @@ class DevTrack:
         project = Project(name, description, technology, status, priority)
 
         self.project_repository.add(project)
+        logger.info(f"Project added: {name}")
 
         print("\nProject added successfully!")
 
@@ -148,6 +150,7 @@ class DevTrack:
          )
 
         self.task_repository.add(task)
+        logger.info(f"Task added: {title}")
 
         print("\nTask added successfully!")
     
@@ -186,6 +189,7 @@ class DevTrack:
                 return
 
             task.mark_completed()
+            logger.info(f"Task completed: {task.title}")
 
             print("\nTask marked as completed!")
 

@@ -7,6 +7,7 @@ from utils.status import ProjectStatus
 from repositories.project_repository import ProjectRepository
 from repositories.task_repository import TaskRepository
 from utils.logger import logger
+from utils.exceptions import TaskAlreadyCompletedError
 
 
 class DevTrack:
@@ -189,12 +190,17 @@ class DevTrack:
                 return
 
             task.mark_completed()
+
             logger.info(f"Task completed: {task.title}")
 
             print("\nTask marked as completed!")
 
         except ValueError:
             print("\nPlease enter a number.")
+
+        except TaskAlreadyCompletedError as error:
+            print(f"\n{error}")
+            logger.warning(str(error))
 
     # ==========================================
     # EMAIL VALIDATION

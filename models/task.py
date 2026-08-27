@@ -1,3 +1,6 @@
+from utils.exceptions import TaskAlreadyCompletedError
+
+
 class Task:
 
     def __init__(self, title, priority, due_date):
@@ -14,11 +17,19 @@ class Task:
     def completed(self, value):
 
         if not isinstance(value, bool):
-            raise ValueError("Completed status must be True or False.")
+            raise ValueError(
+                "Completed status must be True or False."
+            )
 
         self._completed = value
 
     def mark_completed(self):
+
+        if self.completed:
+            raise TaskAlreadyCompletedError(
+                f"Task '{self.title}' is already completed."
+            )
+
         self.completed = True
 
     def display(self):

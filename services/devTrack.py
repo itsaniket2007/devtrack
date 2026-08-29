@@ -8,6 +8,7 @@ from repositories.project_repository import ProjectRepository
 from repositories.task_repository import TaskRepository
 from utils.logger import logger
 from utils.exceptions import TaskAlreadyCompletedError
+from services.report_service import ReportService
 
 
 class DevTrack:
@@ -16,6 +17,7 @@ class DevTrack:
         self.learning_entries = []
         self.project_repository = ProjectRepository()
         self.task_repository = TaskRepository()
+        self.report_service = ReportService()
 
     # ==========================================
     # LEARNING
@@ -247,6 +249,27 @@ class DevTrack:
         if not found:
             print("\nNo results found.")
 
+
+    # Report ------------------------------------------
+    def generate_report(self):
+
+        projects = self.project_repository.get_all()
+        tasks = self.task_repository.get_all()
+
+        filename = self.report_service.generate_report(
+            self.learning_entries,
+            projects,
+            tasks
+        )
+
+        logger.info(f"Report generated: {filename}")
+
+        print(f"\nReport generated successfully!")
+        print(f"Saved to: {filename}")
+
+
+
+
     # ==========================================
     # STATISTICS
     # ==========================================
@@ -299,6 +322,7 @@ class DevTrack:
             print("9. Search")
             print("10. Validate Email")
             print("11. Statistics")
+            print("12. Generate Report")
             print("0. Exit")
 
             print("===================================")
@@ -337,6 +361,8 @@ class DevTrack:
 
             elif choice == "11":
                 self.statistics()
+            elif choice == "12":
+                self.generate_report()
 
             elif choice == "0":
                 print("\nThank you for using DevTrack!")

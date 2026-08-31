@@ -31,19 +31,42 @@ class DevTrack:
         description = input("What did you learn? ")
 
         while True:
+
             try:
                 hours = float(input("Hours spent: "))
                 break
+
             except ValueError:
                 print("Please enter a valid number.")
 
-        difficulty = input("Difficulty (Easy/Medium/Hard): ")
+        difficulty = input(
+            "Difficulty (Easy/Medium/Hard): "
+        )
 
-        learning = LearningEntry(topic, description, hours, difficulty)
+        try:
 
-        self.learning_entries.append(learning)
+            learning = LearningEntry(
+                topic,
+                description,
+                hours,
+                difficulty
+            )
 
-        print("\nLearning entry added successfully!")
+            self.learning_entries.append(learning)
+
+            logger.info(
+                f"Learning entry added: {topic}"
+            )
+
+            print("\nLearning entry added successfully!")
+
+        except ValueError as error:
+
+            print(f"\nInvalid learning entry: {error}")
+
+            logger.warning(
+                f"Invalid learning entry: {error}"
+            )
 
     def view_learning(self):
 

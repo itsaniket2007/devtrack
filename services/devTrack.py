@@ -9,14 +9,17 @@ from repositories.task_repository import TaskRepository
 from utils.logger import logger
 from utils.exceptions import TaskAlreadyCompletedError
 from services.report_service import ReportService
+from repositories.generic_repository import GenericRepository
 
 
 class DevTrack:
 
     def __init__(self):
-        self.learning_entries = []
-        self.project_repository = ProjectRepository()
-        self.task_repository = TaskRepository()
+
+        self.learning_repository = GenericRepository[LearningEntry]()
+        self.project_repository = GenericRepository[Project]()
+        self.task_repository = GenericRepository[Task]()
+
         self.report_service = ReportService()
 
     # ==========================================
@@ -52,7 +55,7 @@ class DevTrack:
                 difficulty
             )
 
-            self.learning_entries.append(learning)
+            self.learning_repository.add(learning)
 
             logger.info(
                 f"Learning entry added: {topic}"
@@ -72,11 +75,16 @@ class DevTrack:
 
         print("\n===== YOUR LEARNING =====")
 
-        if not self.learning_entries:
+        learning_entries = self.learning_repository.get_all()
+
+        if not learning_entries:
             print("No learning entries found.")
             return
 
-        for index, learning in enumerate(self.learning_entries, start=1):
+        for index, learning in enumerate(
+            learning_entries,
+            start=1
+        ):
             print(f"\n[{index}]")
             learning.display()
 
@@ -111,8 +119,10 @@ class DevTrack:
             print("No projects found.")
             return
 
-        for index, project in enumerate(projects, start=1):
-
+        for index, project in enumerate(
+            projects,
+            start=1
+        ):
             print(f"\n[{index}]")
             project.display()
 
@@ -140,14 +150,18 @@ class DevTrack:
             print("\nInvalid choice.")
             return
 
-        projects = self.project_repository.find_by_status(status)
+        projects = self.project_repository.get_all()
 
-        if not projects:
-            print("\nNo projects found with this status.")
-            return
+        found = False
 
         for project in projects:
-            project.display()
+
+            if project.status == status:
+                project.display()
+                found = True
+
+        if not found:
+            print("\nNo projects found with this status.")
 
     # ==========================================
     # TASKS
@@ -190,8 +204,10 @@ class DevTrack:
             print("No tasks found.")
             return
 
-        for index, task in enumerate(tasks, start=1):
-
+        for index, task in enumerate(
+            tasks,
+            start=1
+        ):
             print(f"\n[{index}]")
             task.display()
 
@@ -206,9 +222,12 @@ class DevTrack:
         self.view_tasks()
 
         try:
+
             choice = int(input("\nEnter task number: "))
 
-            task = self.task_repository.get_by_index(choice - 1)
+            task = self.task_repository.get_by_index(
+                choice - 1
+            )
 
             if task is None:
                 print("\nInvalid task number.")
@@ -216,7 +235,9 @@ class DevTrack:
 
             task.mark_completed()
 
-            logger.info(f"Task completed: {task.title}")
+            logger.info(
+                f"Task completed: {task.title}"
+            )
 
             print("\nTask marked as completed!")
 
@@ -225,6 +246,7 @@ class DevTrack:
 
         except TaskAlreadyCompletedError as error:
             print(f"\n{error}")
+
             logger.warning(str(error))
 
     # ==========================================
@@ -276,18 +298,25 @@ class DevTrack:
     # Report ------------------------------------------
     def generate_report(self):
 
+        learning_entries = (
+            self.learning_repository.get_all()
+        )
+
         projects = self.project_repository.get_all()
+
         tasks = self.task_repository.get_all()
 
         filename = self.report_service.generate_report(
-            self.learning_entries,
+            learning_entries,
             projects,
             tasks
         )
 
-        logger.info(f"Report generated: {filename}")
+        logger.info(
+            f"Report generated: {filename}"
+        )
 
-        print(f"\nReport generated successfully!")
+        print("\nReport generated successfully!")
         print(f"Saved to: {filename}")
 
 

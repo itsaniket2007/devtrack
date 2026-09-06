@@ -1,9 +1,5 @@
-from typing import Generic, TypeVar
-
-
+from typing import Generic, TypeVar, Callable
 T = TypeVar("T")
-
-
 class GenericRepository(Generic[T]):
 
     def __init__(self):
@@ -24,3 +20,14 @@ class GenericRepository(Generic[T]):
 
     def count(self) -> int:
         return len(self.items)
+
+    def find(self, condition: Callable[[T], bool]) -> list[T]:
+
+        results = []
+
+        for item in self.items:
+
+            if condition(item):
+                results.append(item)
+
+        return results

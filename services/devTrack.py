@@ -129,39 +129,34 @@ class DevTrack:
 
     def filter_projects(self):
 
-        print("\n===== FILTER PROJECTS =====")
-
-        print("1. Planning")
+        print("\n1. Planning")
         print("2. Working")
         print("3. Completed")
 
-        choice = input("Choose status: ")
+        choice = input("\nChoose status: ")
 
-        if choice == "1":
-            status = ProjectStatus.PLANNING
+        status_map = {
+            "1": ProjectStatus.PLANNING,
+            "2": ProjectStatus.WORKING,
+            "3": ProjectStatus.COMPLETED
+        }
 
-        elif choice == "2":
-            status = ProjectStatus.WORKING
+        status = status_map.get(choice)
 
-        elif choice == "3":
-            status = ProjectStatus.COMPLETED
-
-        else:
+        if status is None:
             print("\nInvalid choice.")
             return
 
-        projects = self.project_repository.get_all()
+        projects = self.project_repository.find(
+            lambda project: project.status == status
+        )
 
-        found = False
+        if not projects:
+            print("\nNo projects found.")
+            return
 
         for project in projects:
-
-            if project.status == status:
-                project.display()
-                found = True
-
-        if not found:
-            print("\nNo projects found with this status.")
+            project.display()
 
     # ==========================================
     # TASKS

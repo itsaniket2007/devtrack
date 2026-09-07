@@ -1,6 +1,4 @@
-from dataclasses import dataclass
-
-
+from dataclasses import dataclass , asdict
 @dataclass
 class LearningEntry:
 
@@ -15,10 +13,14 @@ class LearningEntry:
             raise ValueError("Learning topic cannot be empty.")
 
         if not self.description.strip():
-            raise ValueError("Learning description cannot be empty.")
+            raise ValueError(
+                "Learning description cannot be empty."
+            )
 
         if self.hours <= 0:
-            raise ValueError("Learning hours must be greater than 0.")
+            raise ValueError(
+                "Learning hours must be greater than 0."
+            )
 
         allowed_difficulties = {
             "easy",
@@ -30,6 +32,15 @@ class LearningEntry:
             raise ValueError(
                 "Difficulty must be Easy, Medium, or Hard."
             )
+
+        self.difficulty = self.difficulty.capitalize()
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, data: dict):
+        return cls(**data)
 
     def display(self):
 

@@ -10,13 +10,18 @@ from utils.logger import logger
 from utils.exceptions import TaskAlreadyCompletedError
 from services.report_service import ReportService
 from repositories.generic_repository import GenericRepository
+from repositories.json_repository import JsonRepository
 
 
 class DevTrack:
 
     def __init__(self):
 
-        self.learning_repository = GenericRepository[LearningEntry]()
+        self.learning_repository = JsonRepository[LearningEntry](
+        "data/learning.json",
+        LearningEntry.to_dict,
+        LearningEntry.from_dict
+)
         self.project_repository = GenericRepository[Project]()
         self.task_repository = GenericRepository[Task]()
 

@@ -32,6 +32,26 @@ class Task:
 
         self.completed = True
 
+    def to_dict(self) -> dict:
+        """Return a JSON-safe representation, including completion state."""
+        return {
+            "title": self.title,
+            "priority": self.priority,
+            "due_date": self.due_date,
+            "completed": self.completed,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict):
+        """Recreate a task and restore its private completion flag safely."""
+        task = cls(
+            data["title"],
+            data["priority"],
+            data["due_date"],
+        )
+        task.completed = data.get("completed", False)
+        return task
+
     def display(self):
 
         status = "Completed" if self.completed else "Pending"

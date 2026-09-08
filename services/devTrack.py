@@ -18,12 +18,20 @@ class DevTrack:
     def __init__(self):
 
         self.learning_repository = JsonRepository[LearningEntry](
-        "data/learning.json",
-        LearningEntry.to_dict,
-        LearningEntry.from_dict
-)
-        self.project_repository = GenericRepository[Project]()
-        self.task_repository = GenericRepository[Task]()
+            "data/learning.json",
+            LearningEntry.to_dict,
+            LearningEntry.from_dict,
+        )
+        self.project_repository = JsonRepository[Project](
+            "data/projects.json",
+            Project.to_dict,
+            Project.from_dict,
+        )
+        self.task_repository = JsonRepository[Task](
+            "data/tasks.json",
+            Task.to_dict,
+            Task.from_dict,
+        )
 
         self.report_service = ReportService()
 
@@ -104,10 +112,20 @@ class DevTrack:
         name = input("Project name: ")
         description = input("Description: ")
         technology = input("Technology used: ")
-        status = input("Status: ")
+        status = input("Status (Planning/Working/Completed): ")
         priority = input("Priority (Low/Medium/High): ")
 
-        project = Project(name, description, technology, status, priority)
+        try:
+            project = Project(
+                name,
+                description,
+                technology,
+                status,
+                priority,
+            )
+        except ValueError:
+            print("\nInvalid status. Use Planning, Working, or Completed.")
+            return
 
         self.project_repository.add(project)
         logger.info(f"Project added: {name}")
@@ -234,6 +252,7 @@ class DevTrack:
                 return
 
             task.mark_completed()
+            self.task_repository.save()
 
             logger.info(
                 f"Task completed: {task.title}"

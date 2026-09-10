@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import Generic, TypeVar, Callable
+from typing import Callable, TypeVar
 
 from repositories.generic_repository import GenericRepository
 
@@ -8,7 +8,7 @@ from repositories.generic_repository import GenericRepository
 T = TypeVar("T")
 
 
-class JsonRepository(GenericRepository[T], Generic[T]):
+class JsonRepository(GenericRepository[T]):
 
     def __init__(
         self,

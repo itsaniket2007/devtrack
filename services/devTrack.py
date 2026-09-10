@@ -4,12 +4,9 @@ from models.project import Project
 from models.task import Task
 from utils.valiadators import validate_email
 from utils.status import ProjectStatus
-from repositories.project_repository import ProjectRepository
-from repositories.task_repository import TaskRepository
 from utils.logger import logger
 from utils.exceptions import TaskAlreadyCompletedError
 from services.report_service import ReportService
-from repositories.generic_repository import GenericRepository
 from repositories.json_repository import JsonRepository
 
 

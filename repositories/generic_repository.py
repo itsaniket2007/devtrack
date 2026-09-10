@@ -1,11 +1,17 @@
-from typing import Generic, TypeVar, Callable
+from typing import Callable, TypeVar
+
+from repositories.repository import Repository
+
+
 T = TypeVar("T")
-class GenericRepository(Generic[T]):
+
+
+class GenericRepository(Repository[T]):
 
     def __init__(self):
         self.items: list[T] = []
 
-    def add(self, item: T):
+    def add(self, item: T) -> None:
         self.items.append(item)
 
     def get_all(self) -> list[T]:

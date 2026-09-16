@@ -7,6 +7,7 @@ from utils.status import ProjectStatus
 from utils.logger import logger
 from utils.exceptions import TaskAlreadyCompletedError
 from services.report_service import ReportService
+from services.task_service import TaskService
 from repositories.json_repository import JsonRepository
 
 
@@ -31,6 +32,7 @@ class DevTrack:
         )
 
         self.report_service = ReportService()
+        self.task_service = TaskService()
 
     # ==========================================
     # LEARNING
@@ -265,6 +267,40 @@ class DevTrack:
 
             logger.warning(str(error))
 
+    def view_due_tasks(self):
+
+        print("\n===== TASK DEADLINES =====")
+
+        due_tasks = self.task_service.get_due_tasks(
+            self.task_repository.get_all()
+        )
+
+        headings = {
+            "overdue": "OVERDUE",
+            "today": "DUE TODAY",
+            "upcoming": "DUE IN THE NEXT 7 DAYS",
+        }
+
+        has_due_tasks = False
+
+        for group_name, heading in headings.items():
+            tasks = due_tasks[group_name]
+
+            if not tasks:
+                continue
+
+            has_due_tasks = True
+            print(f"\n{heading}")
+
+            for task in tasks:
+                print(
+                    f"- {task.title} "
+                    f"(Due: {task.due_date}, Priority: {task.priority})"
+                )
+
+        if not has_due_tasks:
+            print("No incomplete tasks are due in the next 7 days.")
+
     # ==========================================
     # EMAIL VALIDATION
     # ==========================================
@@ -387,10 +423,11 @@ class DevTrack:
             print("6. Add Task")
             print("7. View Tasks")
             print("8. Complete Task")
-            print("9. Search")
-            print("10. Validate Email")
-            print("11. Statistics")
-            print("12. Generate Report")
+            print("9. View Task Deadlines")
+            print("10. Search")
+            print("11. Validate Email")
+            print("12. Statistics")
+            print("13. Generate Report")
             print("0. Exit")
 
             print("===================================")
@@ -422,14 +459,17 @@ class DevTrack:
                 self.complete_task()
 
             elif choice == "9":
-                self.search()
+                self.view_due_tasks()
 
             elif choice == "10":
-                self.check_email()
+                self.search()
 
             elif choice == "11":
-                self.statistics()
+                self.check_email()
+
             elif choice == "12":
+                self.statistics()
+            elif choice == "13":
                 self.generate_report()
 
             elif choice == "0":
